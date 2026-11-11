@@ -1,11 +1,12 @@
 import React, { useState } from 'react';
-import { Routes, Route, Navigate } from 'react-router-dom';
+import { Routes, Route, Navigate, useLocation } from 'react-router-dom';
 import Navbar from './components/layout/Navbar';
 import Sidebar from './components/layout/Sidebar';
 import ProtectedRoute from './components/common/ProtectedRoute';
 import { useAuth } from './context/AuthContext';
 
 // Pages
+import LandingPage from './pages/LandingPage';
 import Login from './pages/Login';
 import Register from './pages/Register';
 import Profile from './pages/Profile';
@@ -21,6 +22,8 @@ import Invitations from './pages/Invitations';
 const App = () => {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const { isAuthenticated } = useAuth();
+  const location = useLocation();
+  const isLandingPage = location.pathname === '/';
 
   return (
     <div className="min-h-screen flex flex-col bg-background text-foreground transition-colors duration-200">
@@ -29,18 +32,18 @@ const App = () => {
         isSidebarOpen={isSidebarOpen}
       />
 
-      <div className="flex-1 flex max-w-7xl w-full mx-auto">
-        {isAuthenticated && (
+      <div className={`flex-1 flex ${isLandingPage ? 'w-full' : 'max-w-7xl w-full mx-auto'}`}>
+        {isAuthenticated && !isLandingPage && (
           <Sidebar
             isOpen={isSidebarOpen}
             onClose={() => setIsSidebarOpen(false)}
           />
         )}
 
-        <main className="flex-1 p-4 sm:p-6 lg:p-8 overflow-y-auto">
+        <main className={`flex-1 overflow-y-auto ${isLandingPage ? 'w-full p-4 sm:p-6 lg:p-8' : 'p-4 sm:p-6 lg:p-8'}`}>
           <Routes>
             {/* Public Routes */}
-            <Route path="/" element={<Navigate to="/events" replace />} />
+            <Route path="/" element={<LandingPage />} />
             <Route path="/events" element={<Events />} />
             <Route path="/login" element={<Login />} />
             <Route path="/register" element={<Register />} />

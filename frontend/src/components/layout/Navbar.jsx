@@ -164,7 +164,7 @@ const Navbar = ({ onToggleSidebar, isSidebarOpen }) => {
             >
               Events
             </Link>
-            {isAuthenticated && (
+            {isAuthenticated ? (
               <>
                 <Link
                   to="/recommendations"
@@ -185,6 +185,21 @@ const Navbar = ({ onToggleSidebar, isSidebarOpen }) => {
                 >
                   Invitations
                 </Link>
+              </>
+            ) : (
+              <>
+                <a
+                  href="/#features"
+                  className="px-3.5 py-2 rounded-[var(--radius)] text-muted-foreground hover:text-primary hover:bg-accent transition"
+                >
+                  Features
+                </a>
+                <a
+                  href="/#faq"
+                  className="px-3.5 py-2 rounded-[var(--radius)] text-muted-foreground hover:text-primary hover:bg-accent transition"
+                >
+                  FAQ
+                </a>
               </>
             )}
           </nav>
