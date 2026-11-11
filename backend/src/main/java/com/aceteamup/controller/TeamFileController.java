@@ -57,6 +57,22 @@ public class TeamFileController {
                 .body(resource);
     }
 
+    @GetMapping("/download/{filename:.+}")
+    public ResponseEntity<Resource> downloadFileByFilename(
+            @PathVariable Long teamId,
+            @PathVariable String filename,
+            @AuthenticationPrincipal UserDetails userDetails) {
+        Resource resource = fileStorageService.loadFileAsResourceByFilename(userDetails.getUsername(), teamId, filename);
+
+        // Strip UUID prefix if present for clean download filename
+        String downloadName = filename.contains("_") ? filename.substring(filename.indexOf('_') + 1) : filename;
+
+        return ResponseEntity.ok()
+                .contentType(MediaType.APPLICATION_OCTET_STREAM)
+                .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + downloadName + "\"")
+                .body(resource);
+    }
+
     @DeleteMapping("/{fileId}")
     public ResponseEntity<ApiResponse<Void>> deleteFile(
             @PathVariable Long teamId,

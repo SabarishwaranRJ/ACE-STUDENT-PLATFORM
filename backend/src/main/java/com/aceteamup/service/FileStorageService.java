@@ -158,6 +158,24 @@ public class FileStorageService {
         }
     }
 
+    @Transactional(readOnly = true)
+    public Resource loadFileAsResourceByFilename(String email, Long teamId, String filename) {
+        workspaceSecurityService.validateMemberAccess(email, teamId);
+
+        Path filePath = rootUploadPath.resolve("team_" + teamId).resolve(filename).normalize();
+
+        try {
+            Resource resource = new UrlResource(filePath.toUri());
+            if (resource.exists() && resource.isReadable()) {
+                return resource;
+            } else {
+                throw new ResourceNotFoundException("File not found on storage: " + filename);
+            }
+        } catch (MalformedURLException e) {
+            throw new ResourceNotFoundException("File URL error: " + e.getMessage());
+        }
+    }
+
     public void deleteFile(String email, Long teamId, Long fileId) {
         Student student = workspaceSecurityService.validateMemberAccess(email, teamId);
         TeamFile fileMeta = teamFileRepository.findById(fileId)

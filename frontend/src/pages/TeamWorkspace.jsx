@@ -523,6 +523,45 @@ const TeamWorkspace = () => {
     }
   };
 
+  const handleDownloadFile = async (file) => {
+    try {
+      const token = localStorage.getItem('token');
+      let base = '';
+      if (typeof window !== 'undefined' && window.location.hostname.includes('vercel.app')) {
+        base = 'https://ace-student-platform.onrender.com';
+      } else if (import.meta.env.VITE_API_BASE_URL && import.meta.env.VITE_API_BASE_URL.startsWith('http')) {
+        base = import.meta.env.VITE_API_BASE_URL.replace(/\/api$/, '');
+      }
+
+      const fullUrl = `${base}${file.fileUrl}`;
+      const res = await fetch(fullUrl, {
+        headers: token ? { Authorization: `Bearer ${token}` } : {},
+      });
+
+      if (!res.ok) {
+        window.open(`${fullUrl}?token=${encodeURIComponent(token || '')}`, '_blank');
+        return;
+      }
+
+      const blob = await res.blob();
+      const blobUrl = window.URL.createObjectURL(blob);
+      const link = document.createElement('a');
+      link.href = blobUrl;
+      link.download = file.fileName;
+      document.body.appendChild(link);
+      link.click();
+      link.remove();
+      window.URL.revokeObjectURL(blobUrl);
+    } catch (err) {
+      console.error('File download failed, attempting direct link', err);
+      const token = localStorage.getItem('token');
+      const base = typeof window !== 'undefined' && window.location.hostname.includes('vercel.app')
+        ? 'https://ace-student-platform.onrender.com'
+        : '';
+      window.open(`${base}${file.fileUrl}?token=${encodeURIComponent(token || '')}`, '_blank');
+    }
+  };
+
   const handleDeleteFile = async (fileId) => {
     if (!window.confirm('Delete this file?')) return;
     try {
@@ -1252,14 +1291,14 @@ const TeamWorkspace = () => {
                         </div>
 
                         <div className="flex items-center space-x-2">
-                          <a
-                            href={file.fileUrl}
-                            download={file.fileName}
+                          <button
+                            type="button"
+                            onClick={() => handleDownloadFile(file)}
                             className="p-1.5 rounded hover:bg-muted text-primary transition"
                             title="Download file"
                           >
                             <Download className="w-4 h-4" />
-                          </a>
+                          </button>
                           {(file.uploadedById === user?.studentId || overview?.isCurrentUserLeader) && (
                             <button
                               onClick={() => handleDeleteFile(file.fileId)}
@@ -1572,9 +1611,14 @@ const TeamWorkspace = () => {
                 {overview.recentFiles.slice(0, 4).map((f) => (
                   <div key={f.fileId} className="flex items-center justify-between text-xs p-1.5 bg-input rounded">
                     <span className="truncate text-[11px] text-foreground font-medium max-w-[140px]">{f.fileName}</span>
-                    <a href={f.fileUrl} download={f.fileName} className="text-primary hover:opacity-80 p-1">
+                    <button
+                      type="button"
+                      onClick={() => handleDownloadFile(f)}
+                      className="text-primary hover:opacity-80 p-1"
+                      title="Download file"
+                    >
                       <Download className="w-3.5 h-3.5" />
-                    </a>
+                    </button>
                   </div>
                 ))}
               </div>
