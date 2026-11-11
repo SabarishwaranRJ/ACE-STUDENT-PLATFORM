@@ -1,0 +1,77 @@
+version: '3.8'
+
+services:
+  mysql:
+    image: mysql:8.0
+    container_name: ace_teamup_mysql
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: rootpassword
+      MYSQL_DATABASE: ace_teamup
+      MYSQL_USER: ace_user
+      MYSQL_PASSWORD: ace_password
+    ports:
+      - "3306:3306"
+    volumes:
+      - mysql_data:/var/lib/mysql
+      - ./database/schema.sql:/docker-entrypoint-initdb.d/01-schema.sql
+      - ./database/indexes.sql:/docker-entrypoint-initdb.d/02-indexes.sql
+      - ./database/sample_data.sql:/docker-entrypoint-initdb.d/03-sample_data.sql
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: ace_teamup_backend
+    restart: on-failure
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:mysql://mysql:3306/ace_teamup?useSSL=false&serverTimezone=UTC&allowPublicKeyRetrieval=true
+      SPRING_DATASOURCE_USERNAME: ace_user
+      SPRING_DATASOURCE_PASSWORD: ace_password
+      APP_JWT_SECRET: aceTeamUpSuperSecretKeyForJWT2024PleaseChangeInProductionEnvironmentAtLeast256BitsLong
+      AI_SERVICE_URL: http://ai_service:8000
+    ports:
+      - "8080:8080"
+    depends_on:
+      mysql:
+        condition: service_healthy
+      ai_service:
+        condition: service_started
+
+  ai_service:
+    build:
+      context: ./ai_service
+      dockerfile: Dockerfile
+    container_name: ace_teamup_ai
+    restart: on-failure
+    environment:
+      SBERT_MODEL: sentence-transformers/all-MiniLM-L6-v2
+      WEIGHT_SKILL: 0.35
+      WEIGHT_INTEREST: 0.25
+      WEIGHT_EXPERIENCE: 0.15
+      WEIGHT_AVAILABILITY: 0.15
+      WEIGHT_COLLABORATION: 0.10
+    ports:
+      - "8000:8000"
+    volumes:
+      - huggingface_cache:/root/.cache/huggingface
+
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    container_name: ace_teamup_frontend
+    restart: on-failure
+    ports:
+      - "3000:80"
+    depends_on:
+      - backend
+
+volumes:
+  mysql_data:
+  huggingface_cache:

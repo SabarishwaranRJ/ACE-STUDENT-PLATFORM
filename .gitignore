@@ -1,0 +1,63 @@
+# ==========================================
+# ACE TeamUp - Root .gitignore
+# ==========================================
+
+# Operating System & IDE
+.DS_Store
+Thumbs.db
+desktop.ini
+.idea/
+.vscode/
+*.iml
+*.iws
+*.ipr
+.project
+.classpath
+.settings/
+
+# Logs & Environment
+*.log
+.env
+.env.local
+.env.*.local
+!.env.example
+
+# Node / Frontend
+frontend/node_modules/
+node_modules/
+frontend/dist/
+dist/
+.vite/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+
+# Java / Maven / Backend
+backend/target/
+target/
+*.class
+*.jar
+*.war
+*.ear
+*.nar
+backend/uploads/
+uploads/
+
+# Python / AI Service
+ai_service/__pycache__/
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+ai_service/.venv/
+.venv/
+venv/
+env/
+.pytest_cache/
+
+# Temporary / Scratch
+temp/
+tmp/
+
