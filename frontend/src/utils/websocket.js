@@ -2,8 +2,14 @@ import { Client } from '@stomp/stompjs';
 
 export const createStompClient = (onConnect, onError) => {
   const token = localStorage.getItem('token');
-  const protocol = window.location.protocol === 'https:' ? 'wss:' : 'ws:';
-  const brokerURL = `${protocol}//${window.location.host}/ws`;
+  const envWsUrl = import.meta.env.VITE_WS_URL;
+  let brokerURL;
+  if (envWsUrl) {
+    brokerURL = envWsUrl;
+  } else {
+    const protocol = window.location.protocol === 'https:' ? 'wss:' : 'ws:';
+    brokerURL = `${protocol}//${window.location.host}/ws`;
+  }
 
   const client = new Client({
     brokerURL: brokerURL,
