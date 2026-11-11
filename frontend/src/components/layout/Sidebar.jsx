@@ -49,17 +49,6 @@ const Sidebar = ({ isOpen, onClose }) => {
             );
           })}
         </div>
-
-        {/* AI Engine Status Badge */}
-        <div className="mt-8 p-3.5 bg-accent/60 rounded-[var(--radius)] border border-border text-xs">
-          <div className="flex items-center space-x-1.5 text-primary font-bold mb-1">
-            <span className="w-2 h-2 rounded-full bg-primary animate-pulse" />
-            <span>AI Matching Engine</span>
-          </div>
-          <p className="text-muted-foreground text-[11px] leading-relaxed">
-            Sentence-BERT & OR-Tools integer optimization online.
-          </p>
-        </div>
       </aside>
     </>
   );

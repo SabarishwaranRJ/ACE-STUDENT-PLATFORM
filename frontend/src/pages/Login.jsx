@@ -45,9 +45,6 @@ const Login = () => {
         
         {/* Header */}
         <div className="text-center mb-8">
-          <div className="w-12 h-12 bg-accent text-primary rounded-[var(--radius)] flex items-center justify-center mx-auto mb-3">
-            <Sparkles className="w-6 h-6" />
-          </div>
           <h2 className="text-2xl font-black text-foreground tracking-tight">Welcome Back</h2>
           <p className="text-sm text-slate-500 mt-1">Sign in to find teammates and manage teams</p>
         </div>

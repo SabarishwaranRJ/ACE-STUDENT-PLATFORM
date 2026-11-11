@@ -149,12 +149,9 @@ const Navbar = ({ onToggleSidebar, isSidebarOpen }) => {
                 {isSidebarOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
               </button>
             )}
-            <Link to="/" className="flex items-center space-x-2.5">
-              <div className="w-9 h-9 bg-primary rounded-[var(--radius)] flex items-center justify-center text-primary-foreground shadow-sm">
-                <Sparkles className="w-5 h-5" />
-              </div>
-              <span className="text-lg font-black tracking-tight text-foreground">
-                ACE <span className="text-primary">TeamUp</span>
+            <Link to="/" className="flex items-center space-x-1.5">
+              <span className="text-xl font-black tracking-tight text-foreground">
+                ACE <span className="text-primary font-normal">TeamUp</span>
               </span>
             </Link>
           </div>
