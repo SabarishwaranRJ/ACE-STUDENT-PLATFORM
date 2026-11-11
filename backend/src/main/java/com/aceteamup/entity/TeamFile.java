@@ -43,6 +43,10 @@ public class TeamFile {
     @Builder.Default
     private String category = "General";
 
+    @Lob
+    @Column(name = "file_data", columnDefinition = "LONGBLOB")
+    private byte[] fileData;
+
     @CreationTimestamp
     @Column(name = "uploaded_at", nullable = false, updatable = false)
     private LocalDateTime uploadedAt;

@@ -9,6 +9,7 @@ import java.util.List;
 @Repository
 public interface TeamFileRepository extends JpaRepository<TeamFile, Long> {
     List<TeamFile> findByTeamTeamIdOrderByUploadedAtDesc(Long teamId);
+    List<TeamFile> findByTeamTeamId(Long teamId);
     List<TeamFile> findByTeamTeamIdAndCategoryOrderByUploadedAtDesc(Long teamId, String category);
     long countByTeamTeamId(Long teamId);
 }

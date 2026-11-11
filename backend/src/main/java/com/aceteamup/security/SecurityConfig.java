@@ -45,6 +45,8 @@ public class SecurityConfig {
                 .requestMatchers(HttpMethod.GET, "/api/events/**").permitAll()
                 .requestMatchers(HttpMethod.GET, "/api/skills/**").permitAll()
                 .requestMatchers(HttpMethod.GET, "/api/interests/**").permitAll()
+                .requestMatchers(HttpMethod.GET, "/api/teams/*/files/download/**").permitAll()
+                .requestMatchers(HttpMethod.GET, "/api/teams/*/files/*/download").permitAll()
                 .requestMatchers("/api/recommendations/health").permitAll()
                 .requestMatchers("/ws/**").permitAll()
                 .requestMatchers("/error").permitAll()

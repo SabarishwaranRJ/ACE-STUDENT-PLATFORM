@@ -48,7 +48,8 @@ public class TeamFileController {
             @PathVariable Long teamId,
             @PathVariable Long fileId,
             @AuthenticationPrincipal UserDetails userDetails) {
-        Resource resource = fileStorageService.loadFileAsResource(userDetails.getUsername(), teamId, fileId);
+        String email = userDetails != null ? userDetails.getUsername() : null;
+        Resource resource = fileStorageService.loadFileAsResource(email, teamId, fileId);
 
         String contentType = "application/octet-stream";
         return ResponseEntity.ok()
@@ -62,10 +63,12 @@ public class TeamFileController {
             @PathVariable Long teamId,
             @PathVariable String filename,
             @AuthenticationPrincipal UserDetails userDetails) {
-        Resource resource = fileStorageService.loadFileAsResourceByFilename(userDetails.getUsername(), teamId, filename);
+        String email = userDetails != null ? userDetails.getUsername() : null;
+        Resource resource = fileStorageService.loadFileAsResourceByFilename(email, teamId, filename);
 
         // Strip UUID prefix if present for clean download filename
-        String downloadName = filename.contains("_") ? filename.substring(filename.indexOf('_') + 1) : filename;
+        String downloadName = resource.getFilename() != null ? resource.getFilename()
+                : (filename.contains("_") ? filename.substring(filename.indexOf('_') + 1) : filename);
 
         return ResponseEntity.ok()
                 .contentType(MediaType.APPLICATION_OCTET_STREAM)
