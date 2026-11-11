@@ -6,6 +6,8 @@ export const createStompClient = (onConnect, onError) => {
   let brokerURL;
   if (envWsUrl) {
     brokerURL = envWsUrl;
+  } else if (typeof window !== 'undefined' && window.location.hostname.includes('vercel.app')) {
+    brokerURL = 'wss://ace-student-platform.onrender.com/ws';
   } else {
     const protocol = window.location.protocol === 'https:' ? 'wss:' : 'ws:';
     brokerURL = `${protocol}//${window.location.host}/ws`;
