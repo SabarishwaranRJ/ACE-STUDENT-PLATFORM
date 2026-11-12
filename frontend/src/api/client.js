@@ -11,7 +11,7 @@ const apiClient = axios.create({
   headers: {
     'Content-Type': 'application/json',
   },
-  timeout: 15000,
+  timeout: 90000, // 90 seconds to comfortably handle Render free tier cold starts
 });
 
 // Request interceptor: attach JWT token
@@ -33,6 +33,9 @@ apiClient.interceptors.response.use(
     return response.data;
   },
   (error) => {
+    if (error.code === 'ECONNABORTED' || error.message?.includes('timeout')) {
+      return Promise.reject(new Error('Server is currently waking up from sleep. Please wait a moment and try again.'));
+    }
     if (error.response && error.response.status === 401) {
       localStorage.removeItem('token');
       localStorage.removeItem('user');
